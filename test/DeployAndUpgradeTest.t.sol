@@ -24,8 +24,22 @@ contract DeployAndUpgradeTest is Test {
         vm.deal(OWNER, 1 ether);
     }
 
-    function testProxyStakingV1() public {
+    function testProxyV2StakingCheckBalanceInV1() public {
+        GoldV2 newGold = new GoldV2();
+        upgrader.upgradeGold(proxy, address(newGold));
+
         vm.startPrank(OWNER);
+
+        GoldV2(proxy).staking{value: 0.01 ether}();
+
+        uint256 stakingAmount = GoldV1(proxy).getStakerAmount(OWNER);
+        console.log(stakingAmount);
+        vm.stopPrank();
+
+        assertEq(stakingAmount, 0.01 ether);
+    }
+
+    function testProxyStakingV1() public {
         GoldV1(proxy).staking{value: 0.01 ether}();
         uint256 stakingAmount = GoldV1(proxy).getStakerAmount(OWNER);
         console.log(stakingAmount);

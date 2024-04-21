@@ -28,11 +28,11 @@ contract GoldV2 is UUPSUpgradeable {
     function staking() external payable {
         require(msg.value == 0.01 ether, "you need to staking 0.01ETH");
         staker.push(msg.sender);
-        s_stakingAmount[msg.sender] = msg.value;
+        s_stakingAmount[msg.sender] += msg.value;
     }
 
-    function getStakerAmount() external view returns (uint256) {
-        return s_stakingAmount[msg.sender];
+    function getStakerAmount(address stakerAddress) external view returns (uint256) {
+        return s_stakingAmount[stakerAddress];
     }
 
     function unStaking(uint256 amount) external {

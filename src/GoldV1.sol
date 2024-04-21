@@ -41,7 +41,7 @@ contract GoldV1 is Initializable, ERC20Upgradeable, ERC20PermitUpgradeable, Owna
     function staking() external payable {
         require(msg.value == 0.01 ether, "you need to staking 0.01ETH");
         staker.push(msg.sender);
-        s_stakingAmount[msg.sender] = msg.value;
+        s_stakingAmount[msg.sender] += msg.value;
     }
 
     function getStakerAmount(address stakerAddress) external view returns (uint256) {
