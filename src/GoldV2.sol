@@ -10,7 +10,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 contract GoldV2 is UUPSUpgradeable {
     uint256 internal number;
 
-    function setNumber(uint256 _number) external {}
+    function setNumber(uint256 _number) external {
+        number = _number;
+    }
 
     function getNumber() external view returns (uint256) {
         return number;
