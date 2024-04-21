@@ -21,6 +21,15 @@ contract DeployAndUpgradeTest is Test {
         deployer = new DeployGold();
         upgrader = new UpgradeGold();
         proxy = deployer.run();
+        vm.deal(OWNER, 1 ether);
+    }
+
+    function testProxyStakingV1() public {
+        vm.startPrank(OWNER);
+        GoldV1(proxy).staking{value: 0.01 ether}();
+        uint256 stakingAmount = GoldV1(proxy).getStakerAmount(OWNER);
+        console.log(stakingAmount);
+        assertEq(stakingAmount, 0.01 ether);
     }
 
     function testProxyGoldV1() public view {

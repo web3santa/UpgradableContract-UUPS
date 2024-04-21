@@ -15,6 +15,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 contract GoldV1 is Initializable, ERC20Upgradeable, ERC20PermitUpgradeable, OwnableUpgradeable, UUPSUpgradeable {
     uint256 internal number;
+    address[] internal staker;
+
+    mapping(address staker => uint256 amount) internal s_stakingAmount;
 
     constructor() {
         _disableInitializers();
@@ -33,6 +36,16 @@ contract GoldV1 is Initializable, ERC20Upgradeable, ERC20PermitUpgradeable, Owna
 
     function version() external pure returns (uint256) {
         return 1;
+    }
+
+    function staking() external payable {
+        require(msg.value == 0.01 ether, "you need to staking 0.01ETH");
+        staker.push(msg.sender);
+        s_stakingAmount[msg.sender] = msg.value;
+    }
+
+    function getStakerAmount(address stakerAddress) external view returns (uint256) {
+        return s_stakingAmount[stakerAddress];
     }
 
     function _authorizeUpgrade(address newImplementation) internal override {}

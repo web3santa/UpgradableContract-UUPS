@@ -9,6 +9,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 contract GoldV2 is UUPSUpgradeable {
     uint256 internal number;
+    address[] internal staker;
+
+    mapping(address staker => uint256 amount) internal s_stakingAmount;
 
     function setNumber(uint256 _number) external {
         number = _number;
@@ -20,6 +23,25 @@ contract GoldV2 is UUPSUpgradeable {
 
     function version() external pure returns (uint256) {
         return 2;
+    }
+
+    function staking() external payable {
+        require(msg.value == 0.01 ether, "you need to staking 0.01ETH");
+        staker.push(msg.sender);
+        s_stakingAmount[msg.sender] = msg.value;
+    }
+
+    function getStakerAmount() external view returns (uint256) {
+        return s_stakingAmount[msg.sender];
+    }
+
+    function unStaking(uint256 amount) external {
+        require(amount <= s_stakingAmount[msg.sender], "Need to mating staking amount of token");
+
+        s_stakingAmount[msg.sender] -= amount;
+
+        (bool success,) = address(msg.sender).call{value: amount}("");
+        require(success, "error to unstaking");
     }
 
     function _authorizeUpgrade(address newImplementation) internal override {}
